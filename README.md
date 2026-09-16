@@ -12,6 +12,7 @@ Welcome to the **entra-powershell-toolkit** repository! This repository contains
 | :--- | :--- | :--- | :--- |
 | **Episode 04** | [`Deploy-LabBaseline.ps1`](./TenantDomainConfiguration/Deploy-LabBaseline/Deploy-LabBaseline.ps1) | `TenantDomainConfiguration` | Deploys a full corporate identity baseline (9 persona users, 6 security groups, break-glass admin) in 60s. |
 | **Episode 06** | [`Export-SecureScoreReport.ps1`](./AuditingReportingCompliance/Export-SecureScoreReport/Export-SecureScoreReport.ps1) | `AuditingReportingCompliance` | Connects to Microsoft Graph Security API to audit Secure Score and export all Improvement Actions to CSV. |
+| **Episode 08** | [ThreatHuntingQueries.kql](./KQL-Queries/ThreatHuntingQueries.kql) | KQL-Queries / ThreatHunting | 6 production KQL queries detecting LOLBins, LSASS dumps, non-browser C2 beacons, cross-domain phish correlation, and custom detection rule. |
 
 ---
 
@@ -51,6 +52,10 @@ Welcome to the **entra-powershell-toolkit** repository! This repository contains
 - **`OAuth-Consent-Automation`**: Delegated and application permission auditing.
 
 ---
+
+### 9. 🎯 [KQL Threat Hunting & Advanced Detection Engine](./KQL-Queries/)
+- **[ThreatHuntingQueries.kql](./KQL-Queries/ThreatHuntingQueries.kql)**: Production KQL hunting queries for Defender XDR telemetry tables (DeviceProcessEvents, DeviceNetworkEvents, EmailEvents). ([Documentation](./KQL-Queries/README.md))
+- **[Simulate-LabIncidents.ps1](./KQL-Queries/Simulate-LabIncidents.ps1)**: Safe attack simulator to trigger telemetry and open test incidents for live hunting drills.
 
 ## ⚡ Prerequisites
 

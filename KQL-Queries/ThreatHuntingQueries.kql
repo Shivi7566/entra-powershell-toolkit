@@ -1,0 +1,95 @@
+// ==============================================================================
+// Episode 08: Using Threat Analytics & Advanced Hunting with KQL
+// Course: Microsoft Security Stack / SOC Analyst Full Course | Cloud Knowledge
+// Repository: entra-powershell-toolkit & microsoft-security-course
+// Author: Cloud Knowledge (CloudKnowledge.in)
+// ==============================================================================
+
+// ------------------------------------------------------------------------------
+// QUERY 1: Suspicious PowerShell Execution with Encoded Commands & Web Downloads
+// MITRE ATT&CK: Execution (T1059.001) / Defense Evasion (T1027)
+// Table: DeviceProcessEvents (30-day historical endpoint telemetry)
+// ------------------------------------------------------------------------------
+DeviceProcessEvents
+| where Timestamp > ago(7d)
+| where ProcessCommandLine has_any ("powershell.exe", "pwsh.exe")
+| where ProcessCommandLine has_any ("-enc", "-encodedcommand", "downloadstring", "invoke-webrequest", "iwr", "curl", "iex")
+| project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine, InitiatingProcessFileName, InitiatingProcessCommandLine, FolderPath
+| sort by Timestamp desc
+| limit 100
+
+
+// ------------------------------------------------------------------------------
+// QUERY 2: Suspicious Living-Off-The-Land Binary (LOLBin) Tool Transfer
+// MITRE ATT&CK: Command and Control: Ingress Tool Transfer (T1105)
+// Detects certutil, bitsadmin, or curl fetching remote files
+// ------------------------------------------------------------------------------
+DeviceProcessEvents
+| where Timestamp > ago(14d)
+| where FileName in~ ("certutil.exe", "bitsadmin.exe")
+| where ProcessCommandLine has_any ("-urlcache", "-split", "/transfer", "/download")
+| project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine, InitiatingProcessFileName
+| sort by Timestamp desc
+
+
+// ------------------------------------------------------------------------------
+// QUERY 3: Potential LSASS Memory Dumping & Credential Harvesting
+// MITRE ATT&CK: Credential Access: OS Credential Dumping (T1003.001)
+// Detects utilities targeting lsass.exe (e.g. procdump, rundll32 comsvcs.dll)
+// ------------------------------------------------------------------------------
+DeviceProcessEvents
+| where Timestamp > ago(14d)
+| where (FileName =~ "rundll32.exe" and ProcessCommandLine has "comsvcs.dll" and ProcessCommandLine has "MiniDump")
+     or (ProcessCommandLine has "procdump" and ProcessCommandLine has "lsass")
+     or (ProcessCommandLine has "sekurlsa" or ProcessCommandLine has "mimikatz")
+| project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine, InitiatingProcessFileName
+| sort by Timestamp desc
+
+
+// ------------------------------------------------------------------------------
+// QUERY 4: Outbound Network Connections by Non-Standard Processes to Public IPs
+// MITRE ATT&CK: Command and Control (T1071)
+// Detects cmd, powershell, or script interpreters establishing external TCP sockets
+// ------------------------------------------------------------------------------
+DeviceNetworkEvents
+| where Timestamp > ago(7d)
+| where InitiatingProcessFileName in~ ("powershell.exe", "cmd.exe", "rundll32.exe", "wscript.exe", "cscript.exe")
+| where ActionType == "ConnectionSuccess"
+// Exclude private IP ranges (RFC 1918)
+| where not(ipv4_is_private(RemoteIP)) and RemoteIP != "127.0.0.1"
+| project Timestamp, DeviceName, InitiatingProcessFileName, RemoteIP, RemotePort, RemoteUrl
+| summarize ConnectionCount = count(), FirstSeen = min(Timestamp), LastSeen = max(Timestamp) by DeviceName, InitiatingProcessFileName, RemoteIP, RemotePort
+| sort by ConnectionCount desc
+
+
+// ------------------------------------------------------------------------------
+// QUERY 5: Cross-Domain Correlation: Phishing Email Delivery to Endpoint Execution
+// MITRE ATT&CK: Initial Access (T1566) -> Execution (T1204.002)
+// Joins Microsoft Defender for Office 365 (EmailEvents) with Endpoint (DeviceProcessEvents)
+// ------------------------------------------------------------------------------
+let SuspectEmails = EmailEvents
+| where Timestamp > ago(3d)
+| where ThreatTypes has_any ("Phish", "Malware") or DeliveryAction == "Delivered"
+| where isnotempty(FileName)
+| project EmailTimestamp = Timestamp, RecipientEmailAddress, SenderFromAddress, Subject, AttachmentName = FileName, NetworkMessageId;
+let EndpointExecutions = DeviceProcessEvents
+| where Timestamp > ago(3d)
+| project ProcessTimestamp = Timestamp, DeviceName, AccountUpn = AccountName, FileName, ProcessCommandLine, InitiatingProcessFileName;
+SuspectEmails
+| join kind=inner (
+    EndpointExecutions
+) on $left.AttachmentName == $right.FileName
+| where ProcessTimestamp >= EmailTimestamp
+| project EmailTimestamp, ProcessTimestamp, RecipientEmailAddress, DeviceName, Subject, AttachmentName, ProcessCommandLine
+| sort by ProcessTimestamp desc
+
+
+// ------------------------------------------------------------------------------
+// QUERY 6: Custom Detection Rule Template: High-Risk Process Tampering Alert
+// Formatted for saving as an Automated Custom Detection Rule in Defender XDR
+// Required Output Columns: Timestamp, ReportId, DeviceId (or DeviceName), AccountUpn
+// ------------------------------------------------------------------------------
+DeviceProcessEvents
+| where Timestamp > ago(1h)
+| where ProcessCommandLine has_any ("vssadmin delete shadows", "wbadmin delete catalog", "bcdedit /set {default} bootstatuspolicy ignoreallfailures")
+| project Timestamp, ReportId, DeviceId, DeviceName, AccountName, ProcessCommandLine, InitiatingProcessFileName
