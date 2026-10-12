@@ -69,8 +69,20 @@ Scripts automatically check and install missing sub-modules on launch.
 
 ## 📺 Official Video Tutorials & Lab Walkthroughs
 These scripts accompany hands-on lessons in the **Microsoft Security Stack & SOC Analyst Full Course** by Cloud Knowledge:
-- **YouTube Channel**: [Cloud Knowledge](https://www.youtube.com/@CloudKnowledge)
-- **Website**: [CloudKnowledge.in](https://cloudknowledge.in)
+- **YouTube Channel**: [Cloud Knowledge](https://www.youtube.com/@Cloud-Knowledge)
+- **Official Website**: [CloudKnowledge.in](https://cloudknowledge.in)
+
+---
+
+## 📚 Recommended Enterprise Architecture Guides & Interview Handbooks
+Explore our production deployment guides, troubleshooting playbooks, and interview question banks on [CloudKnowledge.in](https://cloudknowledge.in):
+
+- 📖 **[Top 35 Microsoft Entra ID Scenario Interview Questions & Answers (2026)](https://cloudknowledge.in/top-35-microsoft-entra-id-scenario-interview-questions-and-answers/)** — Real-world production scenarios covering Conditional Access, PIM, CAE, SSPR, and hybrid identity.
+- 🔐 **[Microsoft Entra ID Governance & Lifecycle Workflows Architecture](https://cloudknowledge.in/microsoft-entra-id-governance-lifecycle-workflows/)** — Complete Joiner-Mover-Leaver automation, access packages, and segregation of duties (SoD).
+- 🛠️ **[Top 25 Okta, SAML 2.0 & OIDC Troubleshooting Interview Questions](https://cloudknowledge.in/top-25-okta-saml-oidc-troubleshooting-interview-questions/)** — Diagnosing silent SSO failures, token claims, clock skew, and signature verification in DevTools.
+- 🚀 **[Top 30 Kubernetes Troubleshooting & CNI Interview Questions](https://cloudknowledge.in/top-30-kubernetes-troubleshooting-cni-interview-questions/)** — CrashLoopBackOff, CoreDNS resolution, packet drops, and Pod networking debugging.
+- ⚡ **[Cilium vs Istio Ambient Mesh Benchmark & Enterprise Zero Trust Guide](https://cloudknowledge.in/cilium-vs-istio-ambient-mesh-benchmark/)** — Sidecarless mutual TLS, eBPF kernel tracing, and L4/L7 latency benchmarks.
+- ☁️ **[Microsoft Graph PowerShell SDK v2 Automation Playbook](https://cloudknowledge.in/microsoft-graph-powershell-sdk-v2-automation-guide/)** — Secure unattended automation, least-privilege scoping, and throttling mitigation.
 
 ---
 
