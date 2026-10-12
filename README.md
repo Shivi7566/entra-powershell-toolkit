@@ -86,5 +86,12 @@ Explore our production deployment guides, troubleshooting playbooks, and intervi
 
 ---
 
+## 🖨️ Physical Lab Notebooks & Laminated Cheat Sheets: PrintKrlo.in
+Need printed copies of Entra ID architecture posters, laminated PowerShell cheat sheets, or hardcopy lab notes?
+- **Order directly at [PrintKrlo.in](https://printkrlo.in)** — Smart Cyber Cafe & Online Xerox Kiosk.
+- High-quality document printing, spiral binding, and doorstep delivery for students, cloud engineers, and IT teams.
+
+---
+
 ## 📄 License & Contributing
 Feel free to fork, submit issues, or contribute pull requests to help expand and improve these automation toolkits for the cybersecurity community!
