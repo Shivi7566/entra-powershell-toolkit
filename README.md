@@ -35,6 +35,7 @@ Welcome to the **entra-powershell-toolkit** repository! This repository contains
 ### 5. 💻 [Device Identity Management](./DeviceIdentityManagement/)
 - **`BitLocker-Key-Management`**: Audits and retrieves BitLocker recovery keys escrowed in Microsoft Entra.
 - **`Device-Auditing`**: Comprehensive auditing of Entra joined, registered, and hybrid devices.
+- **[`Extension-Attribute-Details`](./DeviceIdentityManagement/Extension-Attribute-Details/)**: Exports extensionAttribute1-5 for all Entra joined, hybrid joined, and registered devices to CSV. ([Explanation](./DeviceIdentityManagement/Extension-Attribute-Details/Extension-Attribute-Details-Explain.md))
 - **`Stale-Device-Cleanup`**: Automated identification and cleanup of inactive tenant device records.
 
 ### 6. 👥 [User & Identity Management](./UserIdentityManagement/)
